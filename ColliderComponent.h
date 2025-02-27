@@ -108,24 +108,31 @@ public:
 		float overlap = circle1->radius + circle2->radius - distance.Magnitude();
 		distance.Normalize();
 
+		float m1 = physic1->mass;
+		float m2 = physic2->mass;
+
 		Vector2D oldVelocity1 = physic1->velocity;
 		Vector2D newVelocity1 = physic1->velocity;
+		Vector2D oldVelocity2 = physic2->velocity;
+		Vector2D newVelocity2 = physic2->velocity;
 		Vector2D vDirection1 = distance;
 		vDirection1.Multiply(oldVelocity1.x * distance.x + oldVelocity1.y * distance.y);
 		newVelocity1 -= vDirection1;
-
-		Vector2D oldVelocity2 = physic2->velocity;
-		Vector2D newVelocity2 = physic2->velocity;
 		Vector2D vDirection2 = distance;
 		vDirection2.Multiply(oldVelocity2.x * distance.x + oldVelocity2.y * distance.y);
 		newVelocity2 -= vDirection2;
 
-		Vector2D avgVDirection = vDirection1;
-		avgVDirection += vDirection2;
-		avgVDirection /= 2;
+		newVelocity1 += Vector2D(oldVelocity1.x, oldVelocity1.y).Multiply((m1 - m2) / (m1 + m2)).Add(
+			Vector2D(oldVelocity2.x, oldVelocity2.y).Multiply(2 * m2 / (m1 + m2)));
+		newVelocity2 += Vector2D(oldVelocity2.x, oldVelocity2.y).Multiply((m2 - m1) / (m1 + m2)).Add(
+			Vector2D(oldVelocity1.x, oldVelocity1.y).Multiply(2 * m1 / (m1 + m2)));
 
-		newVelocity1 += avgVDirection;
-		newVelocity2 += avgVDirection;
+		/*Vector2D avgVDirection = vDirection1;
+		avgVDirection += vDirection2;
+		avgVDirection /= 2;*/
+
+		/*newVelocity1 += avgVDirection;
+		newVelocity2 += avgVDirection;*/
 
 		physic1->velocity = newVelocity1;
 		physic2->velocity = newVelocity2;

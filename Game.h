@@ -1,11 +1,13 @@
 #include "SDL.h"
 #include "ECS.h"
 #include "GameplayScene.h"
+#include "GameplayWithAIScene.h"
 #include <iostream>
 enum class GameState {
 	MainMenu,
 	Gameplay,
-	GameOver
+	GameOver,
+	GameplayWithAI
 };
 class Game {
 public:
@@ -20,9 +22,11 @@ public:
 	static SDL_Renderer* renderer;
 	static SDL_Event event;
 	static Manager gameplayManager;
+	static Manager gameplayWithAIManager;
 	static Manager mainMenuManager;
 	static Manager gameOverManager;
 	static GameplayScene gameplayScene;
+	static GameplayWithAIScene gameplayWithAIScene;
 private:
 	GameState gameState = GameState::MainMenu;
 	bool isRunning;

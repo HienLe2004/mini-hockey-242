@@ -11,7 +11,7 @@ private:
 	bool isInitialized = false;
 public:
 	PlayerGroup* playerGroups[2];
-	Entity* invisibleLines[2];
+	Entity* invisibleLines[4];
 	Entity* topWall;
 	Entity* bottomWall;
 	Entity* topLeftWall;
@@ -32,6 +32,8 @@ public:
 		playerGroups[1]->players[0]->player->getComponent<TransformComponent>().position = Vector2D(900, 100);
 		playerGroups[1]->players[1]->player->getComponent<TransformComponent>().position = Vector2D(900, 500);
 
+
+
 		puck.init(m);
 		puck.puck->getComponent<PhysicComponent>().decreasingRate = 0.005f;
 		puck.puck->getComponent<TransformComponent>().position = Vector2D(200, 300);
@@ -44,6 +46,14 @@ public:
 		invisibleLines[1] = &line2;
 		line2.addComponent<TransformComponent>(465, 300);
 		line2.addComponent<RectColliderComponent>(Vector2D(0, 0), Vector2D(10, 600));
+		auto& line3(manager->addEntity());
+		invisibleLines[2] = &line3;
+		line3.addComponent<TransformComponent>(0, 300);
+		line3.addComponent<RectColliderComponent>(Vector2D(0, 0), Vector2D(10, 600));
+		auto& line4(manager->addEntity());
+		invisibleLines[3] = &line4;
+		line4.addComponent<TransformComponent>(1000, 300);
+		line4.addComponent<RectColliderComponent>(Vector2D(0, 0), Vector2D(10, 600));
 		
 		auto& tWall(manager->addEntity());
 		topWall = &tWall;
@@ -113,14 +123,14 @@ public:
 			}
 		}
 		//Invisible lines with players
-		for (int g = 0; g < 2; g++) {
+		for (int g = 0; g < 4; g++) {
 			for (int p = 0; p < 2; p++) {
-				bool b = CheckCollision::CheckCollisionRectAndCircle(&invisibleLines[g]->getComponent<RectColliderComponent>(), &playerGroups[g]->players[p]->player->getComponent<CircleColliderComponent>());
+				bool b = CheckCollision::CheckCollisionRectAndCircle(&invisibleLines[g]->getComponent<RectColliderComponent>(), &playerGroups[g%2]->players[p]->player->getComponent<CircleColliderComponent>());
 				if (b) {
 					//std::cout << "Collided!" << std::endl;
 					CheckCollision::ResolveCollistionRectAndCircle(&invisibleLines[g]->getComponent<RectColliderComponent>(),
-						&playerGroups[g]->players[p]->player->getComponent<CircleColliderComponent>(),
-						&playerGroups[g]->players[p]->player->getComponent<PhysicComponent>());
+						&playerGroups[g%2]->players[p]->player->getComponent<CircleColliderComponent>(),
+						&playerGroups[g%2]->players[p]->player->getComponent<PhysicComponent>());
 				}
 			}
 		}

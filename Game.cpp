@@ -6,7 +6,9 @@ SDL_Event Game::event;
 Manager Game::mainMenuManager;
 Manager Game::gameOverManager;
 Manager Game::gameplayManager;
+Manager Game::gameplayWithAIManager;
 GameplayScene Game::gameplayScene;
+GameplayWithAIScene Game::gameplayWithAIScene;
 void Game::init(const char* title, int xpos, int ypos, int width, int height, bool fullscreen)
 {
 	int flags = 0;
@@ -33,6 +35,8 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 		gameplayScene.init(&gameplayManager);
 		//Main menu entities
 		//Game over entities
+		//GameplayWithAI entities
+		gameplayWithAIScene.init(&gameplayWithAIManager);
 	}
 	else
 	{
@@ -51,6 +55,9 @@ void Game::handleEvents()
 		if (event.type == SDL_KEYDOWN) {
 			if (event.key.keysym.sym == SDLK_n) {
 				gameState = GameState::Gameplay;
+			}
+			else if (event.key.keysym.sym == SDLK_o) {
+				gameState = GameState::GameplayWithAI;
 			}
 		}
 	}
@@ -77,7 +84,23 @@ void Game::handleEvents()
 			else if (event.key.keysym.sym == SDLK_m) {
 				gameState = GameState::MainMenu;
 			}
+			else if (event.key.keysym.sym == SDLK_o) {
+				gameState = GameState::MainMenu;
+			}
 		}
+	}
+	else if (gameState == GameState::GameplayWithAI) {
+		// Press [M] to back to MainMenu
+		// Press [N] to end game
+		if (event.type == SDL_KEYDOWN) {
+			if (event.key.keysym.sym == SDLK_m) {
+				gameState = GameState::MainMenu;
+			}
+			else if (event.key.keysym.sym == SDLK_n) {
+				gameState = GameState::GameOver;
+			}
+		}
+		gameplayWithAIScene.handleEvents(event);
 	}
 
 }
@@ -97,6 +120,12 @@ void Game::update()
 		gameOverManager.refresh();
 		gameOverManager.update();
 	}
+	else if (gameState == GameState::GameplayWithAI) {
+		gameplayWithAIManager.refresh();
+		gameplayWithAIManager.update();
+		//Check collision
+		gameplayWithAIScene.checkCollision();
+	}
 	
 }
 void Game::render()
@@ -113,6 +142,10 @@ void Game::render()
 	else if (gameState == GameState::GameOver) {
 		SDL_SetRenderDrawColor(renderer, 200, 0, 0, 255); // Red background
 		gameOverManager.draw();
+	}
+	else if (gameState == GameState::GameplayWithAI) {
+		gameplayWithAIScene.drawWalls(renderer);
+		gameplayWithAIManager.draw();
 	}
 	SDL_RenderPresent(renderer);
 }

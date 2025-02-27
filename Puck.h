@@ -14,7 +14,7 @@ public:
 		puck = &p;
 		p.addComponent<TransformComponent>(0, 0);
 		p.addComponent<SpriteComponent>("images/puck.png", 128, 128, 32, 32);
-		p.addComponent<PhysicComponent>();
+		p.addComponent<PhysicComponent>(1);
 		p.addComponent<CircleColliderComponent>(Vector2D(0, 0), 16.0f);
 	}
 	void handleEvents(SDL_Event event) {

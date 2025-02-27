@@ -7,8 +7,8 @@ private:
 	Manager* manager;
 	float originalSpeed = 3.0f;
 	float speed = 3.0f;
-	float dashedSpeed = 30.0f;
-	float decreaseAmount = 1.0f;
+	float dashedSpeed = 10.0f;
+	float decreaseAmount = 0.5f;
 	bool dashed = false;
 	bool active = false;
 	SDL_KeyCode dash;
@@ -23,7 +23,8 @@ public:
 		player = &p;
 		p.addComponent<TransformComponent>(500, 300);
 		p.addComponent<SpriteComponent>("images/Player.png", 128, 128, 64, 64);
-		p.addComponent<PhysicComponent>();
+		p.addComponent<PhysicComponent>(5);
+		p.getComponent<PhysicComponent>().decreasingRate = 0.1f;
 		p.addComponent<KeyboardControlComponent>(SDLK_w, SDLK_d, SDLK_s, SDLK_a);
 		p.addComponent<CircleColliderComponent>(Vector2D(0, 0), 32.0f);
 	}

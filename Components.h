@@ -5,3 +5,4 @@
 #include "PhysicComponent.h"
 #include "KeyboardControlComponent.h"
 #include "ColliderComponent.h"
+#include "AIComponent.h"

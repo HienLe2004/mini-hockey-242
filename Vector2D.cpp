@@ -75,6 +75,9 @@ Vector2D& Vector2D::operator-=(const Vector2D& vec)
 {
 	return this->Subtract(vec);
 }
+bool Vector2D::operator==(const Vector2D& vec) {
+	return (this->x == vec.x && this->y == vec.y);
+}
 Vector2D& Vector2D::operator=(const Vector2D& vec)
 {
 	this->x = vec.x;

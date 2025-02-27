@@ -20,6 +20,7 @@ public:
 	Vector2D& operator=(const Vector2D& vec);
 	Vector2D& operator+=(const Vector2D& vec);
 	Vector2D& operator-=(const Vector2D& vec);
+	bool operator==(const Vector2D& vec);
 	Vector2D& operator*=(const float k);
 	Vector2D& operator/=(const float k);
 	friend std::ostream& operator<<(std::ostream& stream, const Vector2D& vec);
