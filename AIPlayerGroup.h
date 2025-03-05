@@ -6,6 +6,7 @@ public:
 	AIPlayer* players[2];
 	AIComponent* aiComponents[2];
 	TransformComponent* puckTransform;
+	PhysicComponent* puckPhysic;
 	AIPlayerGroup() {}
 	~AIPlayerGroup() {
 		for (int i = 0; i < 2; i++) {
@@ -16,12 +17,15 @@ public:
 	}
 	void init(Manager* m, Entity* puck) {
 		puckTransform = &puck->getComponent<TransformComponent>();
+		puckPhysic = &puck->getComponent<PhysicComponent>();
 		players[0] = new AIPlayer();
-		players[0]->init(m, puck, Vector2D(900, 100));
+		//players[0]->init(m, puck, Vector2D(900, 100));
+		players[0]->init(m, puck, Vector2D(600, 300));
 		players[0]->player->getComponent<AIComponent>().baseX = 600;
 		aiComponents[0] = &players[0]->player->getComponent<AIComponent>();
 		players[1] = new AIPlayer();
-		players[1]->init(m, puck, Vector2D(900, 500));
+		//players[1]->init(m, puck, Vector2D(900, 500));
+		players[1]->init(m, puck, Vector2D(950, 300));
 		players[1]->player->getComponent<AIComponent>().baseX = 950;
 		aiComponents[1] = &players[1]->player->getComponent<AIComponent>();
 	}
@@ -40,7 +44,7 @@ public:
 			//std::cout << "P1 " << aiComponents[0]->moveDirection.x << "," << aiComponents[0]->moveDirection.y << std::endl;
 			//std::cout << "P2 " << aiComponents[1]->moveDirection.x << "," << aiComponents[1]->moveDirection.y << std::endl;
 			if (aiComponents[0]->state != STAY && aiComponents[1]->state != STAY) {
-				if (puckTransform->position.x < 650) {
+				if (puckTransform->position.x < 600 || puckPhysic->velocity.x < 0) {
 					//std::cout << 1 << std::endl;
 					aiComponents[0]->setActive(true);
 					aiComponents[1]->setActive(false);

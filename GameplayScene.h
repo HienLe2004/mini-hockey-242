@@ -162,9 +162,9 @@ public:
 		}
 	}
 	void drawWalls(SDL_Renderer* renderer) {
-		SDL_SetRenderDrawColor(renderer, 0, 200, 0, 255); // Green background
+		SDL_SetRenderDrawColor(renderer, 164, 189, 186, 255); // Gray background
 		SDL_RenderClear(renderer);
-		SDL_SetRenderDrawColor(renderer, 0, 0, 200, 255);
+		SDL_SetRenderDrawColor(renderer, 108, 147, 92, 255); //Dark blue wall
 		//Mid
 		SDL_Rect rect;
 		rect.w = 10;

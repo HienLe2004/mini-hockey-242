@@ -72,7 +72,7 @@ public:
 				}
 			}
 			//Move toward and hit slow puck shooted from front
-			if (puckPhysic->transform->position.x > baseX - 100 && puckPhysic->velocity.Magnitude() < 1) {
+			if (puckPhysic->transform->position.x > 500 && puckPhysic->velocity.Magnitude() < 1) {
 				targetPoint = Vector2D(puckPhysic->transform->position.x, puckPhysic->transform->position.y);
 				/*std::cout << "chase" << std::endl;*/
 			}
@@ -80,7 +80,7 @@ public:
 		//Puck from behind
 		else if (puckPhysic->transform->position.x > playerPhysic->transform->position.x && puckPhysic->transform->position.x < 1000) {
 			//Dodge puck
-			if (puckPhysic->velocity.Magnitude() > 1) {
+			if (puckPhysic->velocity.Magnitude() >= 0) {
 				if (puckPhysic->transform->position.y < 100) {
 					if (playerPhysic->transform->position.y > puckPhysic->transform->position.y + 100) {
 						targetPoint = Vector2D(baseX, playerPhysic->transform->position.y);
@@ -97,17 +97,18 @@ public:
 						targetPoint = Vector2D(baseX, puckPhysic->transform->position.y - 100);
 					}
 				}
-				else if (puckPhysic->transform->position.y > playerPhysic->transform->position.y) {
+				else if (puckPhysic->transform->position.y >= playerPhysic->transform->position.y) {
 					targetPoint = Vector2D(baseX, puckPhysic->transform->position.y - 100);
 				}
 				else if (puckPhysic->transform->position.y < playerPhysic->transform->position.y) {
 					targetPoint = Vector2D(baseX, puckPhysic->transform->position.y + 100);
 				}
 			}
-			else {
-				//Move backward and hit slow puck shooted from behind
-				targetPoint = Vector2D(puckPhysic->transform->position.x + 200, playerPhysic->transform->position.y);
-			}
+			//std::cout << "Target dodge " << puckPhysic->velocity.Magnitude() << " " << targetPoint.x << "," << targetPoint.y << std::endl;
+			//else {
+			//	//Move backward and hit slow puck shooted from behind
+			//	targetPoint = Vector2D(puckPhysic->transform->position.x + 200, playerPhysic->transform->position.y);
+			//}
 		}
 		else {
 			targetPoint = Vector2D(baseX, 300);

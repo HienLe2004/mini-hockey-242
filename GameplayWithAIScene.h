@@ -27,7 +27,7 @@ public:
 
 		puck.init(m);
 		puck.puck->getComponent<PhysicComponent>().decreasingRate = 0.005f;
-		puck.puck->getComponent<TransformComponent>().position = Vector2D(200, 300);
+		puck.puck->getComponent<TransformComponent>().position = Vector2D(800, 300);
 
 		playerGroup = new PlayerGroup();
 		playerGroup->init(m, SDLK_w, SDLK_d, SDLK_s, SDLK_a, SDLK_f, SDLK_g, SDLK_h);
@@ -36,9 +36,10 @@ public:
 
 		aiPlayerGroup = new AIPlayerGroup();
 		aiPlayerGroup->init(m,puck.puck);
-		aiPlayerGroup->players[0]->player->getComponent<TransformComponent>().position = Vector2D(900, 100);
-		aiPlayerGroup->players[1]->player->getComponent<TransformComponent>().position = Vector2D(900, 500);
-
+		//aiPlayerGroup->players[0]->player->getComponent<TransformComponent>().position = Vector2D(900, 100);
+		//aiPlayerGroup->players[1]->player->getComponent<TransformComponent>().position = Vector2D(900, 500);
+		aiPlayerGroup->players[0]->player->getComponent<TransformComponent>().position = Vector2D(600, 300);
+		aiPlayerGroup->players[1]->player->getComponent<TransformComponent>().position = Vector2D(950, 300);
 
 
 		auto& line1(manager->addEntity());
@@ -191,9 +192,9 @@ public:
 		}
 	}
 	void drawWalls(SDL_Renderer* renderer) {
-		SDL_SetRenderDrawColor(renderer, 0, 0, 200, 255);// Blue background
+		SDL_SetRenderDrawColor(renderer, 19, 93, 216, 255);//Dark Blue background
 		SDL_RenderClear(renderer);
-		SDL_SetRenderDrawColor(renderer, 0, 200, 0, 255); 
+		SDL_SetRenderDrawColor(renderer, 3, 37, 126, 255);
 		//Mid
 		SDL_Rect rect;
 		rect.w = 10;
