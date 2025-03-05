@@ -1,6 +1,7 @@
 #include "Game.h"
 #include "ECS.h"
 #include "Components.h"
+using namespace std;
 SDL_Renderer* Game::renderer = nullptr;
 SDL_Event Game::event;
 Manager Game::mainMenuManager;
@@ -9,8 +10,22 @@ Manager Game::gameplayManager;
 Manager Game::gameplayWithAIManager;
 GameplayScene Game::gameplayScene;
 GameplayWithAIScene Game::gameplayWithAIScene;
+
+TTF_Font* font = nullptr;
 void Game::init(const char* title, int xpos, int ypos, int width, int height, bool fullscreen)
 {
+	if (TTF_Init() == -1) {
+		std::cerr << "SDL_ttf could not initialize! Error: " << TTF_GetError() << std::endl;
+		isRunning = false;
+		return;
+	}
+	font = TTF_OpenFont("assets/fonts/OpenSans-Regular.ttf", 24);
+	if (!font) {
+		std::cerr << "Failed to load font: " << TTF_GetError() << std::endl;
+		isRunning = false;
+		return;
+	}
+
 	int flags = 0;
 	if (fullscreen)
 	{
@@ -43,6 +58,8 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 		isRunning = false;
 	}
 }
+
+
 void Game::handleEvents()
 {
 	SDL_PollEvent(&event);
@@ -104,16 +121,21 @@ void Game::handleEvents()
 	}
 
 }
-void Game::update()
-{
+void Game::update() {
 	if (gameState == GameState::MainMenu) {
 		mainMenuManager.refresh();
 		mainMenuManager.update();
+
 	}
 	else if (gameState == GameState::Gameplay) {
 		gameplayManager.refresh();
 		gameplayManager.update();
-		//Check collision
+		if (gameplayScene.ballInOpponentGoal()) {
+			gameplayScene.resetPuck();
+		}
+		else if (gameplayScene.ballInPlayerGoal()) {
+			gameplayScene.resetPuck();
+		}
 		gameplayScene.checkCollision();
 	}
 	else if (gameState == GameState::GameOver) {
@@ -136,7 +158,9 @@ void Game::render()
 		mainMenuManager.draw();
 	}
 	else if (gameState == GameState::Gameplay) {
+
 		gameplayScene.drawWalls(renderer);
+		gameplayScene.drawScore(renderer, font);
 		gameplayManager.draw();
 	}
 	else if (gameState == GameState::GameOver) {
@@ -154,5 +178,7 @@ void Game::clean()
 	SDL_DestroyWindow(window);
 	SDL_DestroyRenderer(renderer);
 	SDL_Quit();
+	TTF_CloseFont(font);
+	TTF_Quit();
 	std::cout << "Game cleaned!" << std::endl;
 }

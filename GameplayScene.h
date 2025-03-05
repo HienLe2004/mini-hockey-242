@@ -6,9 +6,15 @@
 #include "SDL.h"
 #include "PlayerGroup.h"
 #include "Puck.h"
+#include <SDL_ttf.h>
+#include <string>
 class GameplayScene : public Scene {
 private:
 	bool isInitialized = false;
+	int score[2] = { 0, 0 };
+	SDL_Texture* scoreTexture = nullptr;
+	SDL_Rect scoreRect;
+
 public:
 	PlayerGroup* playerGroups[2];
 	Entity* invisibleLines[4];
@@ -93,6 +99,7 @@ public:
 
 		isInitialized = true;
 	}
+
 	void handleEvents(SDL_Event event) {
 		if (!isInitialized) return;
 		playerGroups[0]->handleEvents(event);
@@ -161,10 +168,42 @@ public:
 			}
 		}
 	}
+	bool ballInOpponentGoal() {
+		return CheckCollision::CheckCollisionRectAndCircle(
+			&invisibleLines[3]->getComponent<RectColliderComponent>(),
+			&puck.puck->getComponent<CircleColliderComponent>());
+	}
+
+	bool ballInPlayerGoal() {
+		return CheckCollision::CheckCollisionRectAndCircle(
+			&invisibleLines[2]->getComponent<RectColliderComponent>(),
+			&puck.puck->getComponent<CircleColliderComponent>());
+	}
+	void resetPuck() {
+		puck.puck->getComponent<TransformComponent>().position = Vector2D(500, 300); 
+		puck.puck->getComponent<PhysicComponent>().velocity = Vector2D(0, 0);
+	}
+	void resetGame() {
+		score[0] = 0;
+		score[1] = 0;
+		resetPuck();
+	}
+	void updateScore(int p) {
+		if (p == 0 || p == 1) {
+			score[p]++;
+		}
+
+		if (score[p] >= 5) {
+			printf("player %d wins!\n", p + 1);
+			resetGame();
+		}
+
+		resetPuck();
+	}
 	void drawWalls(SDL_Renderer* renderer) {
-		SDL_SetRenderDrawColor(renderer, 164, 189, 186, 255); // Gray background
+		SDL_SetRenderDrawColor(renderer, 0, 200, 0, 255); // Green background
 		SDL_RenderClear(renderer);
-		SDL_SetRenderDrawColor(renderer, 108, 147, 92, 255); //Dark blue wall
+		SDL_SetRenderDrawColor(renderer, 0, 0, 200, 255);
 		//Mid
 		SDL_Rect rect;
 		rect.w = 10;
@@ -209,4 +248,19 @@ public:
 		rect.y = 500 - rect.h / 2;
 		SDL_RenderFillRect(renderer, &rect);
 	}
+	void drawScore(SDL_Renderer* renderer, TTF_Font* font) {
+		SDL_Color color = { 255, 255, 255 }; 
+		std::string scoreText = std::to_string(score[0]) + " - " + std::to_string(score[1]);
+
+		SDL_Surface* textSurface = TTF_RenderText_Solid(font, scoreText.c_str(), color);
+		if (!textSurface) return;
+
+		SDL_Texture* textTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
+		SDL_FreeSurface(textSurface);
+
+		SDL_Rect textRect = { 450, 20, 100, 50 };
+		SDL_RenderCopy(renderer, textTexture, NULL, &textRect);
+		SDL_DestroyTexture(textTexture);
+	}
+
 };
